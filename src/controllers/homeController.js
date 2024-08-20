@@ -1,9 +1,13 @@
 import express from "express";
-
+import db from "../models/index";
+import { json } from "body-parser";
 
 const homeController = {
-    getHomePage: (req, res) => {
-        return res.send("wellcom node");
+    getHomePage: async (req, res) => {
+
+        let data = await db.User.findAll();
+
+        return res.render("homepage.ejs", { data: JSON.stringify(data) });
     },
     getMrrDung: (req, res) => {
         return res.render("test/about.ejs")
