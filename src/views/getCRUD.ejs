@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All user</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>HTML Table</h2>
+
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Address</th>
+            <th>Phonenumber</th>
+            <th>Action</th>
+        </tr>
+
+        <% alluser.forEach(function(row,index) { %>
+            <tr>
+                <td>
+                    <%= row.email %>
+                </td>
+                <td>
+                    <%= row.firstName %>
+                </td>
+                <td>
+                    <%= row.lastName %>
+                </td>
+                <td>
+                    <%= row.address %>
+                </td>
+                <td>
+                    <%= row.phonenumber %>
+                </td>
+                <td>
+                    <a href="/edit-CRUD?id=<%= row.id %>">Edit</a>
+
+                    <a href="/delete-CRUD?id=<%= row.id %>">Delete</a>
+                </td>
+
+            </tr>
+
+            <% }); %>
+
+                </tr>
+    </table>
+</body>
+
+</html>
