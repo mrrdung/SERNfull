@@ -18,6 +18,11 @@ let initWebRouters = (app) => {
     //API
     router.post("/api/login", userController.handleLogin)
     router.get("/api/get-all-users", userController.handleGetAllUsers);
+    router.post("/api/create-users", userController.handleCreateNewUser);
+    router.put("/api/update-users", userController.handleUpdateNewUser);
+    router.delete("/api/delete-users", userController.handleDeleteNewUser);
+    //API allcodes
+    router.get('/api/allcodes', userController.getAllCode);
     return app.use("/", router);
 }
 
