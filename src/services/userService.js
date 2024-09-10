@@ -113,7 +113,8 @@ let createNewUser = (data) => {
                     phonenumber: data.phonenumber,
                     gender: data.gender,
                     roleId: data.roleId,
-                    postionId: data.postionId
+                    positionId: data.positionId,
+                    image: data.avatar
                 });
 
                 resolve({
@@ -134,7 +135,7 @@ let updateUser = (data) => {
         try {
             console.log('check data nodejs', data);
 
-            if (!data.id) {
+            if (!data.id || !data.roleId || !data.positionId || !data.gender) {
                 resolve({
                     errCode: 2,
                     errMessage: "Missing required parameted"
@@ -147,6 +148,13 @@ let updateUser = (data) => {
                 user.firstName = data.firstName;
                 user.lastName = data.lastName;
                 user.address = data.address;
+                user.roleId = data.roleId;
+                user.positionId = data.positionId;
+                user.gender = data.gender;
+                user.phonenumber = data.phonenumber;
+                if (data.avatar) {
+                    user.image = data.avatar;
+                }
 
                 await user.save()
                 resolve({
