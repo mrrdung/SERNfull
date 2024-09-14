@@ -7,7 +7,6 @@ const router = express.Router();
 let initWebRouters = (app) => {
     router.get("/", homeController.getHomePage);
     router.get("/add", homeController.getMrrDung);
-
     router.post("/post-CRUD", homeController.postCRUD);
     router.get("/get-CRUD", homeController.displayUser);
     router.get("/edit-CRUD", homeController.editCRUDUser)
@@ -24,6 +23,10 @@ let initWebRouters = (app) => {
     //API allcodes
     router.get('/api/allcodes', userController.getAllCode);
     router.get('/api/get-top-doctor', doctorController.getTopDoctorHome);
+    router.get('/api/get-all-doctor', doctorController.getAllDoctors);
+    router.post('/api/post-info-doctor', doctorController.postInfoDoctor);
+    router.get('/api/get-detail-doctor-by-id', doctorController.getDetailDoctorById);
+
 
     return app.use("/", router);
 }
