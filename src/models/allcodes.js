@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
     class Allcode extends Model {
         /**
@@ -8,19 +8,26 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            Allcode.hasMany(models.User, { foreignKey: 'positionId', as: 'positionData' })
-            Allcode.hasMany(models.User, { foreignKey: 'gender', as: 'genderData' })
-        }
-    };
-    Allcode.init({
-        keyMap: DataTypes.STRING,
-        type: DataTypes.STRING,
-        valueEn: DataTypes.STRING,
-        valueVi: DataTypes.STRING,
+            Allcode.hasMany(models.User, { foreignKey: "positionId", as: "positionData" });
+            Allcode.hasMany(models.User, { foreignKey: "gender", as: "genderData" });
+            Allcode.hasMany(models.Schedule, { foreignKey: "timeType", as: "timeTypeData" });
 
-    }, {
-        sequelize,
-        modelName: 'Allcode',
-    });
+            Allcode.hasMany(models.Doctor_Infor, { foreignKey: "priceId", as: "priceData" });
+            Allcode.hasMany(models.Doctor_Infor, { foreignKey: "provinceId", as: "provinceData" });
+            Allcode.hasMany(models.Doctor_Infor, { foreignKey: "paymentId", as: "paymentData" });
+        }
+    }
+    Allcode.init(
+        {
+            keyMap: DataTypes.STRING,
+            type: DataTypes.STRING,
+            valueEn: DataTypes.STRING,
+            valueVi: DataTypes.STRING,
+        },
+        {
+            sequelize,
+            modelName: "Allcode",
+        }
+    );
     return Allcode;
 };

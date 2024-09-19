@@ -54,7 +54,17 @@ let saveInfoDoctor = inputData => {
         try {
             // console.log('datainput', inputData);
 
-            if (!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown || !inputData.action) {
+            if (
+                !inputData.doctorId ||
+                !inputData.contentHTML ||
+                !inputData.contentMarkdown ||
+                !inputData.action ||
+                !inputData.selectedPrice ||
+                !inputData.selectedPayment ||
+                !inputData.selectedProvince ||
+                !inputData.nameClinic ||
+                !inputData.addressClinic
+            ) {
                 resolve({
                     errCode: "1",
                     errMessage: "Missing paramter",
@@ -78,6 +88,37 @@ let saveInfoDoctor = inputData => {
                         doctor.description = inputData.description;
                         await doctor.save();
                     }
+                }
+                // upsert to doctor_info table
+
+                let doctorInfo = await db.Doctor_Infor.findOne({
+                    where: {
+                        doctorId: inputData.doctorId,
+                    },
+                    raw: false,
+                });
+                if (doctorInfo) {
+                    //update
+
+                    doctorInfo.priceId = inputData.selectedPrice;
+                    doctorInfo.paymentId = inputData.selectedPayment;
+                    doctorInfo.provinceId = inputData.selectedProvince;
+                    doctorInfo.addressClinic = inputData.nameClinic;
+                    doctorInfo.nameClinic = inputData.addressClinic;
+                    doctorInfo.note = inputData.note;
+
+                    await doctorInfo.save();
+                } else {
+                    //create
+                    await db.Doctor_Infor.create({
+                        doctorId: inputData.doctorId,
+                        priceId: inputData.selectedPrice,
+                        paymentId: inputData.selectedPayment,
+                        provinceId: inputData.selectedProvince,
+                        addressClinic: inputData.nameClinic,
+                        nameClinic: inputData.addressClinic,
+                        note: inputData.note,
+                    });
                 }
 
                 resolve({
@@ -104,7 +145,7 @@ let getDetailDoctorById = inputId => {
                         id: inputId,
                     },
                     attributes: {
-                        exclude: ["password"],
+                        exclude: ["password"], //loai bo
                     },
                     include: [
                         {
@@ -112,6 +153,19 @@ let getDetailDoctorById = inputId => {
                             attributes: ["description", "contentHTML", "contentMarkdown"],
                         },
                         { model: db.Allcode, as: "positionData", attributes: ["valueEn", "valueVi"] },
+                        {
+                            model: db.Doctor_Infor,
+                            attributes: {
+                                exclude: ["id", "doctorId"],
+                            },
+
+                            // attributes: ["description", "contentHTML", "contentMarkdown"],
+                            include: [
+                                { model: db.Allcode, as: "priceData", attributes: ["valueEn", "valueVi"] },
+                                { model: db.Allcode, as: "provinceData", attributes: ["valueEn", "valueVi"] },
+                                { model: db.Allcode, as: "paymentData", attributes: ["valueEn", "valueVi"] },
+                            ],
+                        },
                     ],
                     raw: false,
                     nest: true,
@@ -135,7 +189,7 @@ let getDetailDoctorById = inputId => {
 let bulkCreateScheduleSv = data => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log("data", data);
+            // console.log("data", data);
 
             if (!data.arrSchedule || !data.doctorId || !data.formatDate) {
                 resolve({
@@ -184,6 +238,9 @@ let getScheduleDoctorByDateSV = (doctorId, date) => {
             } else {
                 let dataSchedule = await db.Schedule.findAll({
                     where: { doctorId: doctorId, date: date },
+                    include: [{ model: db.Allcode, as: "timeTypeData", attributes: ["valueVi", "valueEn"] }],
+                    raw: false,
+                    nest: true,
                 });
                 if (!dataSchedule) {
                     dataSchedule = [];

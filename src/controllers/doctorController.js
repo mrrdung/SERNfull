@@ -31,7 +31,6 @@ let getAllDoctors = async (req, res) => {
 let postInfoDoctor = async (req, res) => {
     try {
         let response = await doctorService.saveInfoDoctor(req.body);
-        console.log("req.body", req.body);
 
         return res.status(200).json(response);
     } catch (e) {
@@ -44,7 +43,6 @@ let postInfoDoctor = async (req, res) => {
 };
 let getDetailDoctorById = async (req, res) => {
     try {
-        console.log("info", req.query.id);
         let infor = await doctorService.getDetailDoctorById(req.query.id);
 
         return res.status(200).json(infor);
@@ -71,8 +69,6 @@ let bulkCreateSchedule = async (req, res) => {
 };
 let getScheduleDoctorByDate = async (req, res) => {
     try {
-        console.log("query", req.query);
-
         let data = await doctorService.getScheduleDoctorByDateSV(req.query.doctorId, req.query.date);
         return res.status(200).json(data);
     } catch (e) {
