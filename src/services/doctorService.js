@@ -245,10 +245,97 @@ let getScheduleDoctorByDateSV = (doctorId, date) => {
                 if (!dataSchedule) {
                     dataSchedule = [];
                 }
-                console.log(dataSchedule);
+
                 resolve({
                     errCode: 0,
                     data: dataSchedule,
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getExtraInforDoctorByIdSV = inputId => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!inputId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing require parameter",
+                });
+            } else {
+                let data = await db.Doctor_Infor.findOne({
+                    where: { doctorId: inputId },
+                    attributes: {
+                        exclude: ["id", "doctorId"],
+                    },
+
+                    include: [
+                        { model: db.Allcode, as: "priceData", attributes: ["valueEn", "valueVi"] },
+                        { model: db.Allcode, as: "provinceData", attributes: ["valueEn", "valueVi"] },
+                        { model: db.Allcode, as: "paymentData", attributes: ["valueEn", "valueVi"] },
+                    ],
+                    raw: true,
+                    nest: true,
+                });
+                if (!data) data = {};
+                resolve({
+                    errCode: 0,
+                    data: data,
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getProfileInforDoctorByIdSV = doctorId => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!doctorId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing Require a Parameter",
+                });
+            } else {
+                let data = await db.User.findOne({
+                    where: {
+                        id: doctorId,
+                    },
+                    attributes: {
+                        exclude: ["password"], //loai bo
+                    },
+                    include: [
+                        {
+                            model: db.Markdown,
+                            attributes: ["description", "contentHTML", "contentMarkdown"],
+                        },
+                        { model: db.Allcode, as: "positionData", attributes: ["valueEn", "valueVi"] },
+                        {
+                            model: db.Doctor_Infor,
+                            attributes: {
+                                exclude: ["id", "doctorId"],
+                            },
+
+                            // attributes: ["description", "contentHTML", "contentMarkdown"],
+                            include: [
+                                { model: db.Allcode, as: "priceData", attributes: ["valueEn", "valueVi"] },
+                                { model: db.Allcode, as: "provinceData", attributes: ["valueEn", "valueVi"] },
+                                { model: db.Allcode, as: "paymentData", attributes: ["valueEn", "valueVi"] },
+                            ],
+                        },
+                    ],
+                    raw: false,
+                    // nest: true,
+                });
+                if (data && data.image) {
+                    data.image = new Buffer(data.image, "base64").toString("binary");
+                }
+                if (!data) data = {};
+                resolve({
+                    errCode: 0,
+                    data: data,
                 });
             }
         } catch (e) {
@@ -263,4 +350,6 @@ module.exports = {
     getDetailDoctorById: getDetailDoctorById,
     bulkCreateScheduleSv,
     getScheduleDoctorByDateSV,
+    getExtraInforDoctorByIdSV,
+    getProfileInforDoctorByIdSV,
 };
