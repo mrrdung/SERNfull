@@ -238,7 +238,10 @@ let getScheduleDoctorByDateSV = (doctorId, date) => {
             } else {
                 let dataSchedule = await db.Schedule.findAll({
                     where: { doctorId: doctorId, date: date },
-                    include: [{ model: db.Allcode, as: "timeTypeData", attributes: ["valueVi", "valueEn"] }],
+                    include: [
+                        { model: db.Allcode, as: "timeTypeData", attributes: ["valueVi", "valueEn"] },
+                        { model: db.User, as: "doctorData", attributes: ["firstName", "lastName"] },
+                    ],
                     raw: false,
                     nest: true,
                 });

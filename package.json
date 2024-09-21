@@ -9,16 +9,20 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.19.0",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.5",
     "express": "^4.19.2",
-    "mysql2": "^2.2.5"
+    "mysql2": "^2.2.5",
+    "nodemailer": "6.6.3",
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/node": "^7.12.10",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/preset-env": "^7.12.10",
     "nodemon": "^3.1.4",
     "sequelize": "^6.37.3",
