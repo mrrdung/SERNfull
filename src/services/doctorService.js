@@ -49,25 +49,39 @@ let getAllDoctors = () => {
         }
     });
 };
+let checkRequiredFields = inputData => {
+    let arrFields = [
+        "doctorId",
+        "contentHTML",
+        "contentMarkdown",
+        "action",
+        "selectedPrice",
+        "selectedPayment",
+        "selectedProvince",
+        "nameClinic",
+        "addressClinic",
+    ];
+    let isValid = true;
+    let element = "";
+    for (let i = 0; i < arrFields.length; i++) {
+        if (!inputData[arrFields[i]]) {
+            isValid = false;
+            element = arrFields[i];
+            break;
+        }
+    }
+    return { isValid: isValid, element: element };
+};
 let saveInfoDoctor = inputData => {
     return new Promise(async (resolve, reject) => {
         try {
-            // console.log('datainput', inputData);
+            let checkObj = checkRequiredFields(inputData);
+            console.log(checkObj);
 
-            if (
-                !inputData.doctorId ||
-                !inputData.contentHTML ||
-                !inputData.contentMarkdown ||
-                !inputData.action ||
-                !inputData.selectedPrice ||
-                !inputData.selectedPayment ||
-                !inputData.selectedProvince ||
-                !inputData.nameClinic ||
-                !inputData.addressClinic
-            ) {
+            if (checkObj.isValid === false) {
                 resolve({
                     errCode: "1",
-                    errMessage: "Missing paramter",
+                    errMessage: `Missing paramter ${checkObj.element}`,
                 });
             } else {
                 if (inputData.action === "CREATE") {
@@ -106,8 +120,8 @@ let saveInfoDoctor = inputData => {
                     doctorInfo.addressClinic = inputData.nameClinic;
                     doctorInfo.nameClinic = inputData.addressClinic;
                     doctorInfo.note = inputData.note;
-
-                    await doctorInfo.save();
+                    doctorInfo.specialtyId = inputData.specialtyId;
+                    (doctorInfo.clinicId = inputData.clinicId), await doctorInfo.save();
                 } else {
                     //create
                     await db.Doctor_Infor.create({
@@ -118,6 +132,8 @@ let saveInfoDoctor = inputData => {
                         addressClinic: inputData.nameClinic,
                         nameClinic: inputData.addressClinic,
                         note: inputData.note,
+                        specialtyId: inputData.specialtyId,
+                        clinicId: inputData.clinicId,
                     });
                 }
 
